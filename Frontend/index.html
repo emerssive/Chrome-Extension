@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Fetched from Amazon.com</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Products Fetched from Amazon.com</h1>
+            <div class="user-icon"></div>
+        </header>
+        
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Article name or keywords...">
+                <div class="search-tags" id="search-tags"></div>
+            </div>
+            <div class="dropdown">
+                <button id="dropdown-btn">Vid</button>
+                <div id="dropdown-content" class="dropdown-content">
+                    <label><input type="checkbox" name="category" value="all"> All</label>
+                    <label><input type="checkbox" name="category" value="video_interviews" checked> Video interviews</label>
+                    <label><input type="checkbox" name="category" value="music_videos"> Music videos</label>
+                    <label><input type="checkbox" name="category" value="netflix_reviews"> Netflix reviews</label>
+                </div>
+            </div>
+            <button id="search-btn">Search</button>
+        </div>
+
+        <div class="product-grid" id="product-grid">
+            <!-- Product cards will be dynamically inserted here -->
+        </div>
+
+        <div class="pagination">
+            <button class="prev-btn">&lt;</button>
+            <button class="active">1</button>
+            <button>2</button>
+            <span>...</span>
+            <button>9</button>
+            <button>10</button>
+            <button class="next-btn">&gt;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
