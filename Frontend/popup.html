@@ -1,29 +1,21 @@
 <!DOCTYPE html>
-
+<html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products Fetched from Amazon.com</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
-
 </head>
-
 <body>
-
     <div class="main-container">
         <header>
             <div class="heading-container">
                 <h1 class="h1">Products Fetched from Amazon.com</h1>
             </div>
             <div class="user-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
             </div>
         </header>
@@ -45,150 +37,15 @@
             <button class="search-button">Search</button>
         </div>
 
-        <div class="product-cards">
-            <div class="row-1">
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-                </div>
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-                </div>
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-                </div>
-            </div>
-            <div class="row-1">
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-                </div>
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-                </div>
-                <div class="product-card">
-                    <div class="img-container">
-
-                    </div>
-
-                    <div class="product-title">
-                        <p>Name</p>
-                        <p>FREE</p>
-                    </div>
-
-                    <p class="product-body">
-                        Please add your content here. Keep it short and simple. And smile
-                    </p>
-
-                    <div class="buttons">
-                        <button class="registry-button">Save to Registry</button>
-                        <button class="info-button">More Information</button>
-                    </div>
-
-
-                </div>
-            </div>
-
-
-
+        <div id="product-container" class="product-cards">
+            <!-- Product cards will be dynamically inserted here -->
         </div>
 
         <div class="pagination">
-            <button>&lt;</button>
-            <button class="active">1</button>
-            <button>2</button>
-            <span>...</span>
-            <button>9</button>
-            <button>10</button>
-            <button>&gt;</button>
+            <!-- Pagination buttons will be dynamically inserted here -->
         </div>
     </div>
 
+    <script src="script.js"></script>
 </body>
-
-<footer>
-
-</footer>
+</html>

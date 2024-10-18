@@ -2,12 +2,12 @@
   "manifest_version": 3,
   "name": "Products Registry",
   "version": "1.0",
-  "description": "A google chrome extension to browse the products of an online store, and save products' information in your own personal Registry.",
-  "action": {
-    
-  },
+  "description": "A Google Chrome extension to browse the products of an online store and save products' information in your own personal Registry.",
+  "action": {},
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "scripting",
+    "tabs"
   ],
   "background": {
     "service_worker": "background.js"
