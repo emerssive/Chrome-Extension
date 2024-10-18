@@ -1,88 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    const searchTags = document.getElementById('search-tags');
-    const dropdownBtn = document.getElementById('dropdown-btn');
-    const dropdownContent = document.getElementById('dropdown-content');
-    const searchBtn = document.getElementById('search-btn');
-    const productGrid = document.getElementById('product-grid');
+    const filterContent = document.querySelector('.filter-content');
+    const filterTags = document.querySelector('.filter-tags');
+    const checkboxes = filterContent.querySelectorAll('input[type="checkbox"]');
 
-    // Set initial search term
-    searchInput.value = 'Video interviews';
-    addSearchTag('Video interviews');
-
-    // Toggle dropdown
-    dropdownBtn.addEventListener('click', function(event) {
-        event.stopPropagation();
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Close dropdown when clicking outside
-    window.addEventListener('click', function() {
-        dropdownContent.style.display = 'none';
-    });
-
-    // Handle checkbox changes
-    dropdownContent.addEventListener('change', function(event) {
-        if (event.target.type === 'checkbox') {
-            const label = event.target.parentElement.textContent.trim();
-            if (event.target.checked) {
-                addSearchTag(label);
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                addFilterTag(this.value, this.parentElement.textContent.trim());
             } else {
-                removeSearchTag(label);
+                removeFilterTag(this.value);
             }
-        }
+        });
     });
 
-    function addSearchTag(label) {
-        const tag = document.createElement('div');
-        tag.className = 'search-tag';
-        tag.innerHTML = `${label} <span class="close-tag">×</span>`;
-        tag.querySelector('.close-tag').addEventListener('click', function() {
-            removeSearchTag(label);
-            const checkbox = [...dropdownContent.querySelectorAll('input[type="checkbox"]')]
-                .find(cb => cb.parentElement.textContent.trim() === label);
+    function addFilterTag(value, text) {
+        const tag = document.createElement('span');
+        tag.classList.add('filter-tag');
+        tag.dataset.value = value;
+        tag.innerHTML = `${text} <span class="remove">×</span>`;
+        tag.querySelector('.remove').addEventListener('click', function() {
+            removeFilterTag(value);
+            const checkbox = filterContent.querySelector(`input[value="${value}"]`);
             if (checkbox) checkbox.checked = false;
         });
-        searchTags.appendChild(tag);
+        filterTags.appendChild(tag);
     }
 
-    function removeSearchTag(label) {
-        const tags = searchTags.querySelectorAll('.search-tag');
-        for (let tag of tags) {
-            if (tag.textContent.trim().slice(0, -1) === label) {
-                tag.remove();
-                break;
-            }
-        }
+    function removeFilterTag(value) {
+        const tag = filterTags.querySelector(`.filter-tag[data-value="${value}"]`);
+        if (tag) tag.remove();
     }
-
-    // Generate product cards
-    function generateProductCards() {
-        productGrid.innerHTML = '';
-        for (let i = 0; i < 6; i++) {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="product-image"></div>
-                <div class="product-name">Name</div>
-                <div class="product-price">FREE</div>
-                <div class="product-description">Please add your content here. Keep it short and simple. And smile :)</div>
-                <div class="product-buttons">
-                    <button>Button 2</button>
-                    <button>Button 1</button>
-                </div>
-            `;
-            productGrid.appendChild(card);
-        }
-    }
-
-    // Initial product card generation
-    generateProductCards();
-
-    // Search button click event
-    searchBtn.addEventListener('click', function() {
-        // Here you would typically fetch data from an API
-        // For this example, we'll just regenerate the product cards
-        generateProductCards();
-    });
 });

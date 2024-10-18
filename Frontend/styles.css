@@ -1,157 +1,354 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
-    position: relative;
+    
+    margin: 0;
+    font-family: 'Source Code Pro', monospace;
 }
 
-h1 {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 24px;
-    margin: 0;
-    text-align: center;
+.main-container {
+    background-color: #D9D9D9; /* Background color */
+    padding: 20px; /* Add some padding inside the container */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px; /* Rounded corners for the card effect */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+
+    margin: 20px auto; /* Center the card and add margin */
+}
+
+
+header {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: 0 20px;
+    align-items: center;
+    margin-bottom: 2%;
+}
+
+.heading-container {
+    flex-grow: 1; /* Allows the heading container to take up available space */
+    display: flex; /* Enable flex layout for centering */
+    justify-content: center; /* Center the heading within this container */
+}
+
+.h1 {
+    font-family: 'Source Code Pro';
+    font-size: 32px;
+    font-weight: lighter;
+    text-align: center; /* Center text alignment */
 }
 
 .user-icon {
-    width: 30px;
-    height: 30px;
-    background-color: #ccc;
-    border-radius: 50%;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.search-container {
+.user-icon svg {
+    width: 100%;
+    height: 100%;
+    color: #333;
+}
+
+.search-bar {
     display: flex;
-    margin-bottom: 20px;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    align-items: center;
+    width: 95%;
+    background-color: #FFFFFF;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .search-input-wrapper {
     flex-grow: 1;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    padding: 10px;
+    background-color: #F2F4F8;
+    border-radius: 12px;
+    padding: 5px 10px;
+    margin-right: 10px;
 }
 
-#search-input {
+input[type="text"] {
     flex-grow: 1;
     border: none;
-    font-size: 16px;
-    padding: 5px;
     outline: none;
-    min-width: 200px;
+    background-color: transparent;
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
 }
 
-.search-tags {
+.filter-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-top: 5px;
 }
 
-.search-tag {
-    background-color: #f0f0f0;
-    padding: 5px 10px;
-    border-radius: 20px;
+.filter-tag {
+    background-color: #E0E0E0;
+    padding: 2px 8px;
+    border-radius: 10px;
     font-size: 14px;
     display: flex;
     align-items: center;
 }
 
-.close-tag {
+.filter-tag .remove {
     margin-left: 5px;
     cursor: pointer;
 }
 
-.dropdown {
+.filter-dropdown {
     position: relative;
+    margin-right: 10px;
 }
 
-#dropdown-btn {
-    padding: 15px;
-    font-size: 16px;
-    background-color: white;
+.filter-button {
+    background-color: #F2F4F8;
+    color: #333;
     border: none;
-    border-left: 1px solid #f0f0f0;
+    padding: 12px 15px;
+    border-radius: 12px;
     cursor: pointer;
+    font-size: 16px;
+    white-space: nowrap;
+    width: 100px;
+    
 }
 
-.dropdown-content {
+.filter-content {
     display: none;
     position: absolute;
-    background-color: white;
-    min-width: 200px;
+    background-color: #F2F4F8;
+    min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    border-radius: 4px;
-    overflow: hidden;
-    right: 0;
-}
-
-.dropdown-content label {
-    display: block;
+    border-radius: 12px;
     padding: 10px;
+    top: 100%;
+    left: 0;
 }
 
-.dropdown-content label:hover {
-    background-color: #f1f1f1;
-}
-
-.dropdown-content input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    outline: none;
-    margin-right: 10px;
-    vertical-align: middle;
-    position: relative;
-    top: -1px;
-}
-
-.dropdown-content input[type="checkbox"]:checked {
-    background-color: #ccc;
-}
-
-.dropdown-content input[type="checkbox"]:checked::before {
-    content: '\2714';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 12px;
-}
-
-#search-btn {
-    padding: 15px 20px;
-    font-size: 16px;
-    background-color: black;
-    color: white;
-    border: none;
+.filter-content label {
+    display: block;
+    padding: 5px;
     cursor: pointer;
 }
 
-/* Rest of the CSS remains the same */
+.filter-dropdown:hover .filter-content {
+    display: block;
+}
+
+.search-button {
+    background-color: black;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.search-button:hover {
+    background-color: #444;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-input-wrapper,
+    .filter-dropdown,
+    .search-button {
+        margin: 5px 0;
+    }
+
+    .filter-button,
+    .search-button {
+        width: 100%;
+    }
+}
+
+.product-cards{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.row-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px; /* Adds margin around the row */
+    
+   width: 100%;
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    width: 300px; /* Specify width with 'px' */
+    height: 350px; /* Specify height with 'px' */
+    background-color: white;
+
+   
+   
+    align-items: center;
+    border: 1px solid #ccc; /* Optional: Adds a subtle border */
+    border-radius: 8px; /* Optional: Rounds corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow */
+    padding: 10px; /* Optional: Adds padding inside the card */
+}
+
+.img-container{
+    width: 270px;
+    height: 190px;
+    background-color: #DEDEDE;
+    border-radius: 12px;
+    margin-top: 4%;
+}
+
+.product-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+}
+
+.product-title p{
+    font-family: 'Source Code Pro';
+    font-size: 18px;
+    font-weight: medium;
+    text-align: center;
+}
+
+.product-body{
+    color: #666666;
+    text-align: left;
+    width: 90%;
+    margin-top: -5px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5%;
+    width: 90%;
+    
+}
+
+.registry-button {
+    color: #3C3C43;
+    width: 120px; /* Fixed width for better text containment */
+    height: 40px; /* Fixed height for better visibility */
+    padding: 0; /* Remove padding to allow line-height to work effectively */
+    border: 2px solid #3C3C43; /* Adds a solid border */
+    background-color: white;
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    font-size: 14px; /* Font size for text readability */
+    text-align: center; /* Centers the text horizontally */
+    line-height: 30px; /* Set to the same value as height for vertical centering */
+    transition: background-color 0.3s, color 0.3s; /* Adds transition effect */
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Hides overflow text */
+    text-overflow: ellipsis; /* Adds ellipsis for overflow text */
+}
+
+.info-button {
+    color: white; /* Change text color for visibility */
+    width: 120px; /* Fixed width for better text containment */
+    height: 40px; /* Fixed height for better visibility */
+    padding: 0; /* Remove padding to allow line-height to work effectively */
+    border: 2px solid #3C3C43; /* Adds a solid border */
+    background-color: #3C3C43;
+    cursor: pointer; /* Changes cursor to pointer on hover */
+    font-size: 14px; /* Font size for text readability */
+    text-align: center; /* Centers the text horizontally */
+    line-height: 30px; /* Set to the same value as height for vertical centering */
+    transition: background-color 0.3s, color 0.3s; /* Adds transition effect */
+    white-space: nowrap; /* Prevents text from wrapping */
+    overflow: hidden; /* Hides overflow text */
+    text-overflow: ellipsis; /* Adds ellipsis for overflow text */
+}
+
+
+.registry-button:hover {
+    background-color: #f0f0f0; /* Lightens background on hover */
+}
+
+.info-button:hover {
+    background-color: #444; /* Darkens background on hover */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.pagination button {
+    background-color: white;
+    color: #3C3C43;
+    border: 1px solid #3C3C43;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination button:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination button.active {
+    background-color: #3C3C43;
+    color: white;
+}
+
+.pagination span {
+    color: #3C3C43;
+    font-size: 14px;
+}
+
+/* Specific styles for previous and next buttons */
+.pagination button:first-child,
+.pagination button:last-child {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+    
+    .pagination button {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+}
