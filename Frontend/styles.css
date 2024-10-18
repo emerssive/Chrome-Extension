@@ -1,8 +1,8 @@
-body {
+html,body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    
     margin: 0;
     font-family: 'Source Code Pro', monospace;
 }
@@ -15,10 +15,10 @@ body {
     align-items: center;
     border-radius: 12px; /* Rounded corners for the card effect */
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-
+    width: 100%;
     margin: 20px auto; /* Center the card and add margin */
-}
 
+}
 
 header {
     display: flex;
