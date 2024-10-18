@@ -1,12 +1,14 @@
 // app.js
 require('dotenv').config();
 
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
 
+const PORT = 3000
 const app = express();
 app.use(bodyParser.json());
 
@@ -118,26 +120,26 @@ app.post('/registries/:registryId/products', authenticateJWT, async (req, res) =
   });
   
   // Affiliate Link Generation Function
-  async function generateAffiliateLink(productUrl) {
-    const url = new URL(productUrl);
+  //async function generateAffiliateLink(productUrl) {
+   // const url = new URL(productUrl);
   
-    if (url.hostname.includes('amazon.')) {
-      url.searchParams.set('tag', process.env.AMAZON_ASSOCIATE_TAG);
-    } else if (url.hostname.includes('ebay.')) {
-      url.searchParams.set('campid', process.env.EBAY_CAMPAIGN_ID);
-      url.searchParams.set('toolid', '10001');
-    } else if (url.hostname.includes('merchant.com')) {
-      url.searchParams.set('aff_id', process.env.MERCHANT_AFFILIATE_ID);
-    } else {
-      throw new Error('Unsupported merchant');
-    }
+    //if (url.hostname.includes('amazon.')) {
+      //url.searchParams.set('tag', process.env.AMAZON_ASSOCIATE_TAG);
+    //} else if (url.hostname.includes('ebay.')) {
+      //url.searchParams.set('campid', process.env.EBAY_CAMPAIGN_ID);
+      //url.searchParams.set('toolid', '10001');
+    //} else if (url.hostname.includes('merchant.com')) {
+      //url.searchParams.set('aff_id', process.env.MERCHANT_AFFILIATE_ID);
+    //} else {
+      //throw new Error('Unsupported merchant');
+    //}
   
-    return url.toString();
+    //return url.toString();
   }
   
   
 
-  app.listen(3000, () => {
+  app.listen(PORT, () => {
     console.log('Server running on port 3000');
   });
   
