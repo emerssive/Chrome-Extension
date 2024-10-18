@@ -63,30 +63,9 @@ function uncheckCorrespondingCheckbox(value) {
 }
 
 function loadProducts(page = 1, perPage = 6) {
-    // This function would typically fetch products from an API
-    // For this example, we'll use dummy data
-    const dummyProducts = [
-        { name: "Product 1", price: "FREE", description: "Description for Product 1" },
-        { name: "Product 2", price: "$9.99", description: "Description for Product 2" },
-        { name: "Product 3", price: "FREE", description: "Description for Product 3" },
-        { name: "Product 4", price: "$19.99", description: "Description for Product 4" },
-        { name: "Product 5", price: "FREE", description: "Description for Product 5" },
-        { name: "Product 6", price: "$29.99", description: "Description for Product 6" },
-        { name: "Product 7", price: "FREE", description: "Description for Product 7" },
-        { name: "Product 8", price: "$39.99", description: "Description for Product 8" },
-        { name: "Product 9", price: "FREE", description: "Description for Product 9" },
-        { name: "Product 10", price: "$49.99", description: "Description for Product 10" },
-        { name: "Product 11", price: "FREE", description: "Description for Product 11" },
-        { name: "Product 12", price: "$59.99", description: "Description for Product 12" },
-        { name: "Product 13", price: "FREE", description: "Description for Product 13" },
-        { name: "Product 14", price: "$69.99", description: "Description for Product 14" },
-        { name: "Product 15", price: "FREE", description: "Description for Product 15" },
-        // Add more products as needed
-    ];
-
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
-    const productsToDisplay = dummyProducts.slice(startIndex, endIndex);
+    const productsToDisplay = globalProducts.slice(startIndex, endIndex); // Use globalProducts
 
     const productContainer = document.getElementById('product-container');
     productContainer.innerHTML = ''; // Clear existing products
@@ -104,8 +83,21 @@ function loadProducts(page = 1, perPage = 6) {
         productContainer.appendChild(row);
     }
 
-    updatePagination(page, Math.ceil(dummyProducts.length / perPage));
+    updatePagination(page, Math.ceil(globalProducts.length / perPage)); // Update pagination based on globalProducts
 }
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "updateProducts") {
+        globalProducts = request.products; // Update the global products array
+        loadProducts(); // Call loadProducts to display the new data
+        sendResponse({ status: "updated" });
+    } else if (request.action === "startScraping") {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, { action: "scrapeProductInfo" });
+        });
+        sendResponse({ status: "scraping started" });
+    }
+});
 
 
 function setupPagination() {
