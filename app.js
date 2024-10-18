@@ -97,7 +97,7 @@ app.post('/registries/:registryId/products', authenticateJWT, async (req, res) =
       if (registry.rows.length === 0) return res.status(403).json({ message: 'Access denied' });
   
       // Generate Affiliate Link
-      const affiliateLink = await generateAffiliateLink(name);
+      //const affiliateLink = await generateAffiliateLink(name);
   
       // Insert Product
       const newProduct = await db.query(
@@ -118,11 +118,23 @@ app.post('/registries/:registryId/products', authenticateJWT, async (req, res) =
   });
   
   // Affiliate Link Generation Function
-async function generateAffiliateLink(productName) {
-    // Integrate with actual affiliate API here
-    // Placeholder implementation
-    return `https://affiliate.example.com/?product=${encodeURIComponent(productName)}`;
+  async function generateAffiliateLink(productUrl) {
+    const url = new URL(productUrl);
+  
+    if (url.hostname.includes('amazon.')) {
+      url.searchParams.set('tag', process.env.AMAZON_ASSOCIATE_TAG);
+    } else if (url.hostname.includes('ebay.')) {
+      url.searchParams.set('campid', process.env.EBAY_CAMPAIGN_ID);
+      url.searchParams.set('toolid', '10001');
+    } else if (url.hostname.includes('merchant.com')) {
+      url.searchParams.set('aff_id', process.env.MERCHANT_AFFILIATE_ID);
+    } else {
+      throw new Error('Unsupported merchant');
+    }
+  
+    return url.toString();
   }
+  
   
 
   app.listen(3000, () => {
