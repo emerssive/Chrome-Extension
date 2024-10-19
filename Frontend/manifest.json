@@ -1,15 +1,21 @@
 {
   "manifest_version": 3,
   "name": "Products Registry",
-  "version": "1.0",
-  "description": "A Google Chrome extension to browse the products of an online store and save products' information in your own personal Registry.",
-  "action": {},
+  "version": "1.1",
+  "description": "Automatically scrape product data from online store homepages.",
   "permissions": [
     "activeTab",
     "scripting",
-    "tabs"
+    "tabs",
+    "webNavigation"
   ],
   "background": {
     "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "*://*/*" 
+  ],
+  "action": {
+    "default_popup": "popup.html"
   }
 }
