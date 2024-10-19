@@ -106,17 +106,17 @@ function setupPagination() {
 }
 
 function handlePaginationClick(event) {
-    if (event.target.tagName === 'BUTTON') {
-        const page = parseInt(event.target.textContent);
+    if (event.target?.tagName === 'BUTTON') {
+        const page = parseInt(event.target?.textContent);
         if (!isNaN(page)) {
             loadProducts(page);
-        } else if (event.target.textContent === '<') {
+        } else if (event.target?.textContent === '<') {
             const activePage = document.querySelector('.pagination .active');
             const prevPage = parseInt(activePage.textContent) - 1;
             if (prevPage > 0) {
                 loadProducts(prevPage);
             }
-        } else if (event.target.textContent === '>') {
+        } else if (event.target?.textContent === '>') {
             const activePage = document.querySelector('.pagination .active');
             const nextPage = parseInt(activePage.textContent) + 1;
             const totalPages = document.querySelectorAll('.pagination button').length - 2; // Subtract prev and next buttons
