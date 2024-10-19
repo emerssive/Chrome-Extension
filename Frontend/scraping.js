@@ -1,44 +1,46 @@
-let scrapedProducts = [];
-
 function scrapeProductInfo() {
-    const productDetails = {};
+    const productDetails = [];
 
     // Define common selectors for different product attributes
-    const imageSelectors = ['.image-container img', '.product-image', '.img-product'];
-    const nameSelectors = ['.product-title', '.item-name', '.product-name'];
-    const priceSelectors = ['.price', '.cost', '.amount'];
-    const descriptionSelectors = ['.description', '.details', '.info'];
+    const productSelectors = [
+        '.s-result-item', // Amazon
+        '.product-item', // Generic
+        '.item' // Generic
+    ];
 
-    productDetails.image = extractData(imageSelectors);
-    productDetails.name = extractData(nameSelectors);
-    productDetails.price = extractData(priceSelectors);
-    productDetails.description = extractData(descriptionSelectors);
+    const imageSelectors = ['.s-image', '.product-image', '.img-product'];
+    const nameSelectors = ['.a-text-normal', '.product-title', '.item-name'];
+    const priceSelectors = ['.a-price-whole', '.price', '.cost'];
+    const descriptionSelectors = ['.a-size-base-plus', '.description', '.details'];
 
-    if (productDetails.name) {
-        scrapedProducts.push(productDetails);
-    }
+    let products = [];
+    productSelectors.forEach(selector => {
+        products = products.concat(Array.from(document.querySelectorAll(selector)));
+    });
 
-    console.log(scrapedProducts);
-    sendScrapedProducts(); // Send products to background script
+    products.forEach(product => {
+        const details = {};
+        details.image = extractData(product, imageSelectors, 'src');
+        details.name = extractData(product, nameSelectors);
+        details.price = extractData(product, priceSelectors);
+        details.description = extractData(product, descriptionSelectors);
+
+        if (details.name) {
+            productDetails.push(details);
+        }
+    });
+
+    chrome.runtime.sendMessage({ action: "updateProducts", products: productDetails });
 }
 
-function extractData(selectors) {
+function extractData(product, selectors, attribute) {
     for (let selector of selectors) {
-        const element = document.querySelector(selector);
+        const element = product.querySelector(selector);
         if (element) {
-            return element.tagName.toLowerCase() === 'img' ? element.src : element.innerText.trim();
+            return attribute ? element.getAttribute(attribute) : element.innerText.trim();
         }
     }
-    return null; 
+    return null;
 }
 
-function sendScrapedProducts() {
-    chrome.runtime.sendMessage({ action: "updateProducts", products: scrapedProducts });
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "scrapeProductInfo") {
-        scrapeProductInfo();
-        sendResponse({ status: "success" });
-    }
-});
+scrapeProductInfo();

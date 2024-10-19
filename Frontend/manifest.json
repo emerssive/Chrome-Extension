@@ -7,15 +7,22 @@
     "activeTab",
     "scripting",
     "tabs",
-    "webNavigation"
+    "webNavigation",
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "host_permissions": [
-    "*://*/*" 
+    "*://*/*"
   ],
   "action": {
-    "default_popup": "popup.html"
-  }
+    
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

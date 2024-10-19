@@ -63,41 +63,35 @@ function uncheckCorrespondingCheckbox(value) {
 }
 
 function loadProducts(page = 1, perPage = 6) {
+    chrome.runtime.sendMessage({ action: "getScrapedProducts" }, (response) => {
+      globalProducts = response.products || [];
+      displayProducts(page, perPage);
+    });
+  }
+  
+  function displayProducts(page, perPage) {
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
-    const productsToDisplay = globalProducts.slice(startIndex, endIndex); // Use globalProducts
-
+    const productsToDisplay = globalProducts.slice(startIndex, endIndex);
+  
     const productContainer = document.getElementById('product-container');
     productContainer.innerHTML = ''; // Clear existing products
-
+  
     // Create rows and populate with product cards
     for (let i = 0; i < productsToDisplay.length; i += 3) {
-        const row = document.createElement('div');
-        row.classList.add('row-1');
-        
-        for (let j = i; j < i + 3 && j < productsToDisplay.length; j++) {
-            const productCard = createProductCard(productsToDisplay[j]);
-            row.appendChild(productCard);
-        }
-
-        productContainer.appendChild(row);
+      const row = document.createElement('div');
+      row.classList.add('row-1');
+      
+      for (let j = i; j < i + 3 && j < productsToDisplay.length; j++) {
+        const productCard = createProductCard(productsToDisplay[j]);
+        row.appendChild(productCard);
+      }
+  
+      productContainer.appendChild(row);
     }
-
-    updatePagination(page, Math.ceil(globalProducts.length / perPage)); // Update pagination based on globalProducts
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "updateProducts") {
-        globalProducts = request.products; // Update the global products array
-        loadProducts(); // Call loadProducts to display the new data
-        sendResponse({ status: "updated" });
-    } else if (request.action === "startScraping") {
-        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, { action: "scrapeProductInfo" });
-        });
-        sendResponse({ status: "scraping started" });
-    }
-});
+  
+    updatePagination(page, Math.ceil(globalProducts.length / perPage));
+  }
 
 
 function setupPagination() {
