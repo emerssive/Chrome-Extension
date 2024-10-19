@@ -201,100 +201,113 @@ input[type="text"] {
 .product-card {
     display: flex;
     flex-direction: column;
-    width: 300px; /* Specify width with 'px' */
-    height: 350px; /* Specify height with 'px' */
+    width: 300px;
+    height: 400px; /* Increased height to accommodate all elements */
     background-color: white;
-
-   
-   
     align-items: center;
-    border: 1px solid #ccc; /* Optional: Adds a subtle border */
-    border-radius: 8px; /* Optional: Rounds corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds shadow */
-    padding: 10px; /* Optional: Adds padding inside the card */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    overflow: hidden; /* Prevents content from overflowing */
 }
 
-.img-container{
+.img-container {
     width: 270px;
     height: 190px;
-    background-color: #DEDEDE;
     border-radius: 12px;
     margin-top: 4%;
+    overflow: hidden; /* Ensures image doesn't overflow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.product-title{
+.img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ensures the whole image appears within the container */
+    width: auto;
+    height: auto;
+}
+
+.product-title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 90%;
+    margin-top: 10px;
 }
 
-.product-title p{
-    font-family: 'Source Code Pro';
-    font-size: 18px;
-    font-weight: medium;
-    text-align: center;
+.product-title p {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 45%; /* Allows space for both title and price */
 }
 
-.product-body{
+.product-body {
     color: #666666;
     text-align: left;
     width: 90%;
-    margin-top: -5px;
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    height: 60px; /* Set a fixed height */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
 }
 
-.buttons{
+.buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 5%;
+    margin-top: auto; /* Pushes buttons to the bottom */
     width: 90%;
-    
+    padding: 10px 0;
+}
+
+.registry-button, .info-button {
+    width: 130px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid #3C3C43;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    line-height: 36px;
+    transition: background-color 0.3s, color 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .registry-button {
     color: #3C3C43;
-    width: 120px; /* Fixed width for better text containment */
-    height: 40px; /* Fixed height for better visibility */
-    padding: 0; /* Remove padding to allow line-height to work effectively */
-    border: 2px solid #3C3C43; /* Adds a solid border */
     background-color: white;
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    font-size: 14px; /* Font size for text readability */
-    text-align: center; /* Centers the text horizontally */
-    line-height: 30px; /* Set to the same value as height for vertical centering */
-    transition: background-color 0.3s, color 0.3s; /* Adds transition effect */
-    white-space: nowrap; /* Prevents text from wrapping */
-    overflow: hidden; /* Hides overflow text */
-    text-overflow: ellipsis; /* Adds ellipsis for overflow text */
 }
 
 .info-button {
-    color: white; /* Change text color for visibility */
-    width: 120px; /* Fixed width for better text containment */
-    height: 40px; /* Fixed height for better visibility */
-    padding: 0; /* Remove padding to allow line-height to work effectively */
-    border: 2px solid #3C3C43; /* Adds a solid border */
+    color: white;
     background-color: #3C3C43;
-    cursor: pointer; /* Changes cursor to pointer on hover */
-    font-size: 14px; /* Font size for text readability */
-    text-align: center; /* Centers the text horizontally */
-    line-height: 30px; /* Set to the same value as height for vertical centering */
-    transition: background-color 0.3s, color 0.3s; /* Adds transition effect */
-    white-space: nowrap; /* Prevents text from wrapping */
-    overflow: hidden; /* Hides overflow text */
-    text-overflow: ellipsis; /* Adds ellipsis for overflow text */
 }
 
-
 .registry-button:hover {
-    background-color: #f0f0f0; /* Lightens background on hover */
+    background-color: #f0f0f0;
 }
 
 .info-button:hover {
-    background-color: #444; /* Darkens background on hover */
+    background-color: #444;
 }
+
 
 .pagination {
     display: flex;

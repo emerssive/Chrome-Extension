@@ -101,22 +101,9 @@ function setupPagination() {
 
 function handlePaginationClick(event) {
     if (event.target.tagName === 'BUTTON') {
-        const page = parseInt(event.target.textContent);
+        const page = parseInt(event.target.dataset.page);
         if (!isNaN(page)) {
             loadProducts(page);
-        } else if (event.target.textContent === '<') {
-            const activePage = document.querySelector('.pagination .active');
-            const prevPage = parseInt(activePage.textContent) - 1;
-            if (prevPage > 0) {
-                loadProducts(prevPage);
-            }
-        } else if (event.target.textContent === '>') {
-            const activePage = document.querySelector('.pagination .active');
-            const nextPage = parseInt(activePage.textContent) + 1;
-            const totalPages = document.querySelectorAll('.pagination button').length - 2; // Subtract prev and next buttons
-            if (nextPage <= totalPages) {
-                loadProducts(nextPage);
-            }
         }
     }
 }
@@ -125,44 +112,77 @@ function updatePagination(currentPage, totalPages) {
     const pagination = document.querySelector('.pagination');
     pagination.innerHTML = '';
 
-    const prevButton = document.createElement('button');
-    prevButton.textContent = '<';
-    pagination.appendChild(prevButton);
+    const createButton = (text, page, isDisabled = false) => {
+        const button = document.createElement('button');
+        button.textContent = text;
+        button.dataset.page = page;
+        button.disabled = isDisabled;
+        return button;
+    };
+
+    pagination.appendChild(createButton('<', currentPage - 1, currentPage === 1));
+
+    const pageRange = getPageRange(currentPage, totalPages);
+    pageRange.forEach(i => {
+        if (i === '...') {
+            const span = document.createElement('span');
+            span.textContent = '...';
+            pagination.appendChild(span);
+        } else {
+            const button = createButton(i, i);
+            if (i === currentPage) button.classList.add('active');
+            pagination.appendChild(button);
+        }
+    });
+
+    pagination.appendChild(createButton('>', currentPage + 1, currentPage === totalPages));
+}
+
+function getPageRange(currentPage, totalPages) {
+    const range = [];
+    const delta = 2;
+    const left = currentPage - delta;
+    const right = currentPage + delta + 1;
+    let l;
 
     for (let i = 1; i <= totalPages; i++) {
-        if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
-            pagination.appendChild(pageButton);
-        } else if (i === currentPage - 2 || i === currentPage + 2) {
-            const ellipsis = document.createElement('span');
-            ellipsis.textContent = '...';
-            pagination.appendChild(ellipsis);
+        if (i === 1 || i === totalPages || (i >= left && i < right)) {
+            range.push(i);
+        } else if (i < left) {
+            i = left - 1;
+            range.push('...');
+        } else if (i >= right) {
+            range.push('...');
+            i = totalPages - 1;
         }
     }
 
-    const nextButton = document.createElement('button');
-    nextButton.textContent = '>';
-    pagination.appendChild(nextButton);
+    return range;
 }
 
 function createProductCard(product) {
     const card = document.createElement('div');
     card.classList.add('product-card');
+    
+    const imageUrl = product.image || 'placeholder.jpg'; // Use a placeholder if no image
+    const name = product.name || 'Unknown Product';
+    const price = product.price ? `$${product.price.toFixed(2)}` : 'Price not available';
+    const description = product.description || 'No description available';
+
     card.innerHTML = `
-        <div class="img-container"></div>
-        <div class="product-title">
-            <p>${product.name}</p>
-            <p>${product.price}</p>
+        <div class="img-container">
+            <img src="${imageUrl}" alt="${name}" onerror="this.src='placeholder.jpg'">
         </div>
-        <p class="product-body">${product.description}</p>
+        <div class="product-title">
+            <p title="${name}">${name}</p>
+            <p title="${price}">${price}</p>
+        </div>
+        <p class="product-body" title="${description}">${description}</p>
         <div class="buttons">
-            <button class="registry-button">Save to Registry</button>
-            <button class="info-button">More Information</button>
+            <button class="registry-button" title="Save to Registry">Save to Registry</button>
+            <button class="info-button" title="More Information">More Information</button>
         </div>
     `;
+    
     return card;
 }

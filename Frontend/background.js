@@ -16,10 +16,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
             } else {
-                console.log("Products saved successfully");
+                console.log(`${request.products.length} products saved successfully:`);
+                request.products.forEach((product, index) => {
+                    console.log(`Product ${index + 1}:`, product);
+                });
             }
         });
-    } else if (request.action === "getScrapedProducts") {
+    }
+     else if (request.action === "getScrapedProducts") {
         chrome.storage.local.get('scrapedProducts', (data) => {
           sendResponse({ products: data.scrapedProducts || [] });
         });
