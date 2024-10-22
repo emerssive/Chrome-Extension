@@ -1,4 +1,3 @@
-// app.js
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -26,7 +25,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization'];
   if (!token) return res.status(403).json({ error: 'No token provided' });
-
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).json({ error: 'Unauthorized' });
     req.userId = decoded.id;
@@ -69,6 +67,22 @@ app.post('/login', async (req, res) => {
   }
 });
 
+// Get user profile
+app.get('/profile', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, username, email, created_at FROM users WHERE id = $1',
+      [req.userId]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching user profile' });
+  }
+});
+
 // Create a registry
 app.post('/registries', verifyToken, async (req, res) => {
   const { name, description } = req.body;
@@ -83,16 +97,60 @@ app.post('/registries', verifyToken, async (req, res) => {
   }
 });
 
+// Get all registries for a user
+app.get('/registries', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, name, description, created_at FROM registries WHERE user_id = $1 ORDER BY created_at DESC',
+      [req.userId]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching registries' });
+  }
+});
+
+// Get specific registry by ID
+app.get('/registries/:registryId', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT r.id, r.name, r.description, r.created_at, 
+              COUNT(ri.id) as item_count, 
+              COALESCE(SUM(ri.quantity), 0) as total_items
+       FROM registries r 
+       LEFT JOIN registry_items ri ON r.id = ri.registry_id 
+       WHERE r.id = $1 AND r.user_id = $2 
+       GROUP BY r.id`,
+      [req.params.registryId, req.userId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Registry not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching registry details' });
+  }
+});
+
 // Add product to registry
 app.post('/registry-items', verifyToken, async (req, res) => {
   const { registryId, productId, quantity } = req.body;
   try {
-    // Generate affiliate link (mock implementation)
-    //const affiliateLink = await generateAffiliateLink(productId);
-
+    // First verify the registry belongs to the user
+    const registryCheck = await pool.query(
+      'SELECT id FROM registries WHERE id = $1 AND user_id = $2',
+      [registryId, req.userId]
+    );
+    
+    if (registryCheck.rows.length === 0) {
+      return res.status(403).json({ error: 'Registry not found or unauthorized' });
+    }
+    
     const result = await pool.query(
-      'INSERT INTO registry_items (registry_id, product_id, quantity, affiliate_link) VALUES ($1, $2, $3, $4) RETURNING id',
-      [registryId, productId, quantity, affiliateLink]
+      'INSERT INTO registry_items (registry_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING id',
+      [registryId, productId, quantity]
     );
     res.status(201).json({ message: 'Product added to registry', registryItemId: result.rows[0].id });
   } catch (error) {
@@ -100,7 +158,75 @@ app.post('/registry-items', verifyToken, async (req, res) => {
   }
 });
 
+// Get all items in a registry
+app.get('/registry-items/:registryId', verifyToken, async (req, res) => {
+  try {
+    // First verify the registry belongs to the user
+    const registryCheck = await pool.query(
+      'SELECT id FROM registries WHERE id = $1 AND user_id = $2',
+      [req.params.registryId, req.userId]
+    );
+    
+    if (registryCheck.rows.length === 0) {
+      return res.status(403).json({ error: 'Registry not found or unauthorized' });
+    }
+    
+    const result = await pool.query(
+      `SELECT ri.id, ri.product_id, ri.quantity, ri.created_at, 
+              p.name, p.description, p.price, p.image_url
+       FROM registry_items ri
+       JOIN products p ON ri.product_id = p.id
+       WHERE ri.registry_id = $1
+       ORDER BY ri.created_at DESC`,
+      [req.params.registryId]
+    );
+    
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching registry items' });
+  }
+});
 
+// Get specific registry item
+app.get('/registry-items/:registryId/:itemId', verifyToken, async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT ri.id, ri.product_id, ri.quantity, ri.created_at,
+              p.name, p.description, p.price, p.image_url
+       FROM registry_items ri
+       JOIN products p ON ri.product_id = p.id
+       JOIN registries r ON ri.registry_id = r.id
+       WHERE ri.id = $1 AND ri.registry_id = $2 AND r.user_id = $3`,
+      [req.params.itemId, req.params.registryId, req.userId]
+    );
+    
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Registry item not found' });
+    }
+    
+    res.json(result.rows[0]);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching registry item details' });
+  }
+});
+
+// Search registries
+app.get('/search/registries', verifyToken, async (req, res) => {
+  const { query } = req.query;
+  try {
+    const result = await pool.query(
+      `SELECT id, name, description, created_at 
+       FROM registries 
+       WHERE user_id = $1 
+       AND (name ILIKE $2 OR description ILIKE $2)
+       ORDER BY created_at DESC`,
+      [req.userId, `%${query}%`]
+    );
+    res.json(result.rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Error searching registries' });
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
