@@ -1,7 +1,7 @@
 // Main scraping function
 async function scrapeProductInfo() {
     const productDetails = [];
-    const maxProducts = 50; // Limit the number of products scraped
+    const maxProducts = 200; // Limit the number of products scraped
 
     // Expanded selectors for product containers
     const productContainerSelectors = [
@@ -176,10 +176,15 @@ function extractProductUrl(container) {
 
 // Add a delay to prevent overloading the page and allow dynamic content to load
 setTimeout(() => {
-    scrapeProductInfo()
-        .then(products => {
-            console.log('Scraped products:', products);
-            chrome.runtime.sendMessage({action: "updateProducts", products: products});
-        })
-        .catch(error => console.error('Error in scrapeProductInfo:', error));
+    // Call scrapeProductInfo
+    (async () => {
+        const products = await scrapeProductInfo(); // Wait for scraping to complete
+        console.log('Scraping completed, sending products to background script');
+
+        // Send products to background.js once scraping is done
+        chrome.runtime.sendMessage({ action: "updateProducts", products: products }, () => {
+            console.log("Products sent to background script");
+        });
+    })();
+
 }, 1000);
