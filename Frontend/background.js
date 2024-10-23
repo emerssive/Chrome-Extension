@@ -14,17 +14,23 @@ chrome.action.onClicked.addListener((tab) => {
         // Listen for message from scraping.js that indicates scraping is done
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (request.action === "updateProducts") {
-                // Store the scraped products
-                chrome.storage.local.set({ scrapedProducts: request.products }, () => {
-                    if (chrome.runtime.lastError) {
-                        console.error(chrome.runtime.lastError);
-                    } else {
-                        console.log(`${request.products.length} products saved successfully`);
+                const { storeUrl, products } = request;
 
-                        // Now open popup.html after products have been scraped and saved
-                        chrome.tabs.create({ url: chrome.runtime.getURL("popup.html") });
-                        console.log("Popup created");
-                    }
+                chrome.storage.local.get([storeUrl], (data) => {
+
+                    const updatedData = data[storeUrl] || [];
+                    updatedData.push(...products); // Add new products to existing ones
+
+                    chrome.storage.local.set({ [storeUrl]: updatedData }, () => {
+                        if (chrome.runtime.lastError) {
+                            console.error(chrome.runtime.lastError);
+                        } else {
+
+                            console.log(`${products.length} products saved successfully for ${storeUrl}`);
+                            const popupUrl = chrome.runtime.getURL("popup.html") + `?storeUrl=${encodeURIComponent(storeUrl)}`;
+                            chrome.tabs.create({ url: popupUrl });
+                        }
+                    });
                 });
             }
         });
@@ -35,17 +41,29 @@ chrome.action.onClicked.addListener((tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getScrapedProducts") {
-        chrome.storage.local.get('scrapedProducts', (data) => {
-            sendResponse({ products: data.scrapedProducts || [] });
+        const { storeUrl } = request;
+
+        // Retrieve products for the specific store URL
+        chrome.storage.local.get([storeUrl], (data) => {
+            sendResponse({ products: data[storeUrl] || [] });
         });
         return true; // Keep the message channel open for async response
-    } else if (request.action === "clearProducts") {
-        chrome.storage.local.remove('scrapedProducts', () => {
+    }
+    else if (request.action === "clearProducts") {
+        const {storeUrl} = request;
+
+        // Clear products for the specific store URL
+        chrome.storage.local.remove([storeUrl], () => {
             if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
+                // Optionally send a response to indicate failure
+                sendResponse({success: false, message: `Error clearing products for ${storeUrl}`});
             } else {
-                console.log("Products cleared successfully");
+                console.log(`Products cleared successfully for ${storeUrl}`);
+                // Optionally send a response to indicate success
+                sendResponse({success: true, message: `Products cleared successfully for ${storeUrl}`});
             }
         });
+        return true;
     }
-});
+    });

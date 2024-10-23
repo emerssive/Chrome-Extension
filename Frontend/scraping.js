@@ -179,12 +179,23 @@ setTimeout(() => {
     // Call scrapeProductInfo
     (async () => {
         const products = await scrapeProductInfo(); // Wait for scraping to complete
-        console.log('Scraping completed, sending products to background script');
+        console.log('Scraping completed, fetching current tab URL...');
 
-        // Send products to background.js once scraping is done
-        chrome.runtime.sendMessage({ action: "updateProducts", products: products }, () => {
-            console.log("Products sent to background script");
-        });
+
+        const storeUrl = window.location.href;
+
+            console.log('Current store URL:', storeUrl);
+
+            // Send products and storeUrl to background.js once scraping is done
+            chrome.runtime.sendMessage({
+                action: "updateProducts",
+                storeUrl: storeUrl, // Pass the URL as storeUrl
+                products: products
+            }, () => {
+                console.log("Products and store URL sent to background script");
+            });
+
     })();
+
 
 }, 1000);

@@ -2,6 +2,27 @@ let globalProducts = []; // Global array to store products
 
 document.addEventListener('DOMContentLoaded', initializeApp);
 
+window.addEventListener('beforeunload', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeUrl = urlParams.get('storeUrl');
+
+    console.log("Tab or window is about to be closed, clearing products for:", storeUrl);
+
+    chrome.runtime.sendMessage({
+        action: "clearProducts",
+        storeUrl: storeUrl
+    }, (response) => {
+        console.log("clearProducts message sent to background script");
+        // Log the result but do not block the tab closure
+        if (response && response.success) {
+            console.log(`Successfully cleared products for ${storeUrl}.`);
+        } else {
+            console.error(`Failed to clear products for ${storeUrl}.`);
+        }
+    });
+});
+
+
 function initializeApp() {
     initializeFilterSystem();
     loadProducts();
@@ -63,7 +84,11 @@ function uncheckCorrespondingCheckbox(value) {
 }
 
 function loadProducts(page = 1, perPage = 6) {
-    chrome.runtime.sendMessage({ action: "getScrapedProducts" }, (response) => {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeUrl = urlParams.get('storeUrl');
+
+    chrome.runtime.sendMessage({ action: "getScrapedProducts", storeUrl: storeUrl }, (response) => {
       globalProducts = response.products || [];
       displayProducts(page, perPage);
     });

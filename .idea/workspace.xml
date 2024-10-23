@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/background.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/background.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/scraping.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/scraping.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/script.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +54,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1729696170976</updated>
-      <workItem from="1729696173448" duration="1555000" />
+      <workItem from="1729696173448" duration="7847000" />
     </task>
     <servers />
   </component>
