@@ -32,14 +32,23 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).json({ error: 'No token provided' });
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(403).json({ error: 'No token provided' });
+  
+  const tokenParts = authHeader.split(' ');
+  if (tokenParts[0] !== 'Bearer' || !tokenParts[1]) {
+    return res.status(403).json({ error: 'Malformed token' });
+  }
+  
+  const token = tokenParts[1];
+  
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).json({ error: 'Unauthorized' });
     req.userId = decoded.id;
     next();
   });
 };
+
 
 // User registration
 app.post('/register', async (req, res) => {
