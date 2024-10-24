@@ -1,4 +1,6 @@
 require('dotenv').config();
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
@@ -250,3 +252,465 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+//API documentation
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0', // Specifies the version of OpenAPI
+    info: {
+      title: 'Registry API',
+      version: '1.0.0',
+      description: 'API documentation for the Registry application',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000', // Replace with your server URL
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {          // Defines the security scheme used for JWT
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  apis: ['app.js'], // Points to the file(s) containing annotations
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       description: User registration data
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: john_doe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User registered successfully
+ *                 userId:
+ *                   type: integer
+ *                   example: 1
+ *       500:
+ *         description: Error registering user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Log in a user
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       description: User login credentials
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: password123
+ *     responses:
+ *       200:
+ *         description: Successful login
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                   example: JWT token
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Error logging in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+
+/**
+ * @swagger
+ * /profile:
+ *   get:
+ *     summary: Get user profile
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []       // Indicates this endpoint requires authentication
+ *     responses:
+ *       200:
+ *         description: User profile retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   example: 1
+ *                 username:
+ *                   type: string
+ *                   example: john_doe
+ *                 email:
+ *                   type: string
+ *                   format: email
+ *                   example: john@example.com
+ *                 created_at:
+ *                   type: string
+ *                   format: date-time
+ *                   example: '2021-01-01T00:00:00.000Z'
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Error fetching profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /registries:
+ *   post:
+ *     summary: Create a new registry
+ *     tags:
+ *       - Registries
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Registry data
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Wedding Gifts
+ *               description:
+ *                 type: string
+ *                 example: A registry for our wedding
+ *     responses:
+ *       201:
+ *         description: Registry created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Registry created successfully
+ *                 registryId:
+ *                   type: integer
+ *                   example: 10
+ *       500:
+ *         description: Error creating registry
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /registries:
+ *   get:
+ *     summary: Get all registries for the authenticated user
+ *     tags:
+ *       - Registries
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of registries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Registry'
+ *       500:
+ *         description: Error fetching registries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /registries/{registryId}:
+ *   get:
+ *     summary: Get a specific registry by ID
+ *     tags:
+ *       - Registries
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: registryId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the registry
+ *     responses:
+ *       200:
+ *         description: Registry details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RegistryDetails'
+ *       404:
+ *         description: Registry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Error fetching registry details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /registry-items:
+ *   post:
+ *     summary: Add a product to a registry
+ *     tags:
+ *       - Registry Items
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Product details to add to the registry
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - registryId
+ *               - productId
+ *               - quantity
+ *             properties:
+ *               registryId:
+ *                 type: integer
+ *                 example: 10
+ *               productId:
+ *                 type: integer
+ *                 example: 5
+ *               quantity:
+ *                 type: integer
+ *                 example: 2
+ *     responses:
+ *       201:
+ *         description: Product added to registry
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product added to registry
+ *                 registryItemId:
+ *                   type: integer
+ *                   example: 15
+ *       403:
+ *         description: Unauthorized or registry not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Error adding product
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /registry-items/{registryId}:
+ *   get:
+ *     summary: Get all items in a registry
+ *     tags:
+ *       - Registry Items
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: registryId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the registry
+ *     responses:
+ *       200:
+ *         description: List of registry items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/RegistryItem'
+ *       403:
+ *         description: Registry not found or unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Error fetching registry items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /registry-items/{registryId}/{itemId}:
+ *   get:
+ *     summary: Get a specific registry item
+ *     tags:
+ *       - Registry Items
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: registryId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the registry
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the registry item
+ *     responses:
+ *       200:
+ *         description: Registry item details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RegistryItem'
+ *       404:
+ *         description: Registry item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Error fetching registry item details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
+ * @swagger
+ * /search/registries:
+ *   get:
+ *     summary: Search registries
+ *     tags:
+ *       - Registries
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The search query string
+ *     responses:
+ *       200:
+ *         description: Search results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Registry'
+ *       500:
+ *         description: Error searching registries
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
