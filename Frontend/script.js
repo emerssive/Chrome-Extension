@@ -22,11 +22,17 @@ window.addEventListener('beforeunload', function () {
     });
 });
 
-
 function initializeApp() {
     initializeFilterSystem();
     loadProducts();
     setupPagination();
+
+    const searchInput = document.querySelector('.search-bar input[type="text"]');
+    searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        displayProducts(1, 6, searchTerm); // Reset to first page
+    });
+
 }
 
 function initializeFilterSystem() {
@@ -83,41 +89,43 @@ function uncheckCorrespondingCheckbox(value) {
     if (checkbox) checkbox.checked = false;
 }
 
-function loadProducts(page = 1, perPage = 6) {
+function loadProducts(page = 1, perPage = 6,  searchTerm = '') {
 
     const urlParams = new URLSearchParams(window.location.search);
     const storeUrl = urlParams.get('storeUrl');
 
     chrome.runtime.sendMessage({ action: "getScrapedProducts", storeUrl: storeUrl }, (response) => {
       globalProducts = response.products || [];
-      displayProducts(page, perPage);
+      displayProducts(page, perPage, searchTerm);
     });
   }
-  
-  function displayProducts(page, perPage) {
+
+function displayProducts(page, perPage, searchTerm) {
     const startIndex = (page - 1) * perPage;
     const endIndex = startIndex + perPage;
-    const productsToDisplay = globalProducts.slice(startIndex, endIndex);
-  
+    const filteredProducts = globalProducts.filter(product =>
+        product.name.toLowerCase().includes(searchTerm)
+    );
+    const productsToDisplay = filteredProducts.slice(startIndex, endIndex);
+
     const productContainer = document.getElementById('product-container');
     productContainer.innerHTML = ''; // Clear existing products
-  
+
     // Create rows and populate with product cards
     for (let i = 0; i < productsToDisplay.length; i += 3) {
-      const row = document.createElement('div');
-      row.classList.add('row-1');
-      
-      for (let j = i; j < i + 3 && j < productsToDisplay.length; j++) {
-        const productCard = createProductCard(productsToDisplay[j]);
-        row.appendChild(productCard);
-      }
-  
-      productContainer.appendChild(row);
-    }
-  
-    updatePagination(page, Math.ceil(globalProducts.length / perPage));
-  }
+        const row = document.createElement('div');
+        row.classList.add('row-1');
 
+        for (let j = i; j < i + 3 && j < productsToDisplay.length; j++) {
+            const productCard = createProductCard(productsToDisplay[j]);
+            row.appendChild(productCard);
+        }
+
+        productContainer.appendChild(row);
+    }
+
+    updatePagination(page, Math.ceil(filteredProducts.length / perPage));
+}
 
 function setupPagination() {
     const pagination = document.querySelector('.pagination');
@@ -128,7 +136,9 @@ function handlePaginationClick(event) {
     if (event.target.tagName === 'BUTTON') {
         const page = parseInt(event.target.dataset.page);
         if (!isNaN(page)) {
-            loadProducts(page);
+            const searchInput = document.querySelector('.search-bar input[type="text"]');
+            const searchTerm = searchInput.value.toLowerCase(); // Get the current search term
+            loadProducts(page, 6, searchTerm); // Pass the search term
         }
     }
 }

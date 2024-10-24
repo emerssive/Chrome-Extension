@@ -36,6 +36,7 @@
                             console.error(chrome.runtime.lastError);
                         } else {
                             console.log(`${products.length} products saved successfully for ${storeUrl}`);
+                            console.log(data);
 
                             const popupUrl = chrome.runtime.getURL("popup.html") + `?storeUrl=${encodeURIComponent(storeUrl)}`;
 
