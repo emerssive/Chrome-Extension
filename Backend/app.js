@@ -18,6 +18,15 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('Error executing test query', err.stack);
+  } else {
+    console.log('Database connected:', res.rows[0]);
+  }
+});
+
+
 // JWT secret key
 const JWT_SECRET = process.env.JWT_SECRET;
 
