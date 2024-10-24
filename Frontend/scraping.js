@@ -188,7 +188,7 @@ setTimeout(() => {
 
             // Send products and storeUrl to background.js once scraping is done
             chrome.runtime.sendMessage({
-                action: "updateProducts",
+                action: "saveProducts",
                 storeUrl: storeUrl, // Pass the URL as storeUrl
                 products: products
             }, () => {
