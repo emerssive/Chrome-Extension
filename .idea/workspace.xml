@@ -7,9 +7,7 @@
     <list default="true" id="17ff525c-4900-41c8-a3a6-731988a112e5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/background.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/background.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/scraping.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/scraping.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +56,7 @@
       <workItem from="1729696173448" duration="8151000" />
       <workItem from="1729748513410" duration="4692000" />
       <workItem from="1729864267564" duration="5302000" />
+      <workItem from="1729870056842" duration="1942000" />
     </task>
     <servers />
   </component>

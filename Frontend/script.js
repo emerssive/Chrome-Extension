@@ -235,13 +235,19 @@ function createProductCard(product) {
             // Send delete request
             chrome.runtime.sendMessage({ action: "deleteProduct", productId: product.productId }, (response) => {
                 if (response && response.success) {
-                    saveButton.innerHTML = 'Save to Registry'; // Change back to save button
                     product.productId = null; // Clear productId on deletion
+                    saveButton.innerHTML = '✔ Deleted';
+
+                    setTimeout(() => {
+                        saveButton.innerHTML = 'Save to Registry';
+                    }, 2000); // Show for 1 second
+
                 } else {
                     console.error('Error deleting product');
                 }
             });
-        } else {
+        }
+        else {
             // Show loading spinner
             const loadingSpinner = document.createElement('span');
             loadingSpinner.classList.add('spinner');
@@ -262,18 +268,19 @@ function createProductCard(product) {
 
             // Send message to background.js
             chrome.runtime.sendMessage({ action: "saveProduct", product: productData }, (response) => {
-                if (response && response.productId) {
+                if (response && response.success) {
                     product.productId = response.productId; // Save productId for deletion
                     saveButton.innerHTML = '✔ Saved'; // Show checkmark and text
 
                     // Change button text to "Delete from Registry" after a brief moment
                     setTimeout(() => {
                         saveButton.innerHTML = 'Delete from Registry';
-                    }, 1000); // Show for 1 second
+                    }, 2000); // Show for 1 second
                 } else {
                     saveButton.innerHTML = 'Error'; // Handle error
                 }
             });
+
         }
     });
 

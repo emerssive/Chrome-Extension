@@ -107,7 +107,7 @@
                 .then(data => {
                     // Check for successful response by verifying productId
                     if (data.productId) {
-                        sendResponse({ success: true });
+                        sendResponse({ success: true, productId: data.productId });
                     } else {
                         sendResponse({ success: false, message: data.message || "Failed to save product." });
                     }
@@ -128,14 +128,13 @@
             fetch(`https://c85b-39-51-52-196.ngrok-free.app/products/${productId}`, {
                 method: 'DELETE'
             })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json(); // Optionally return a success message or data
-                    }
-                    throw new Error('Network response was not ok');
-                })
+                .then(response => response.json())
                 .then(data => {
-                    sendResponse({ success: true });
+                    if (data.message === "Product deleted successfully") {
+                        sendResponse({ success: true });
+                    } else {
+                        sendResponse({ success: false });
+                    }
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -144,6 +143,7 @@
 
             return true; // Keep the message channel open for async response
         }
+
 
 
     });
