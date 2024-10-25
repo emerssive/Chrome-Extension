@@ -33,6 +33,9 @@ function initializeApp() {
         displayProducts(1, 6, searchTerm); // Reset to first page
     });
 
+
+
+
 }
 
 function initializeFilterSystem() {
@@ -199,18 +202,23 @@ function createProductCard(product) {
     const card = document.createElement('div');
     card.classList.add('product-card');
     
-    const imageUrl = product.image || 'placeholder.jpg'; // Use a placeholder if no image
+    const image_url = product.image || 'placeholder.jpg'; // Use a placeholder if no image
     const name = product.name || 'Unknown Product';
-    const price = product.price ? `$${product.price.toFixed(2)}` : 'Price not available';
+    const price = product.price ? product.price.toFixed(2) : 'Price not available';
     const description = product.description || 'No description available';
+    const rating = product.rating;
+    const review_count = product.reviewCount;
+    const product_url = product.productUrl;
+    const urlParams = new URLSearchParams(window.location.search);
+    const store_url = urlParams.get('storeUrl');
 
     card.innerHTML = `
         <div class="img-container">
-            <img src="${imageUrl}" alt="${name}" onerror="this.src='placeholder.jpg'">
+            <img src="${image_url}" alt="${name}" onerror="this.src='placeholder.jpg'">
         </div>
         <div class="product-title">
             <p title="${name}">${name}</p>
-            <p title="${price}">${price}</p>
+            <p title="${price}">$${price}</p>
         </div>
         <p class="product-body" title="${description}">${description}</p>
         <div class="buttons">
@@ -218,6 +226,58 @@ function createProductCard(product) {
             <button class="info-button" title="More Information">More Information</button>
         </div>
     `;
-    
+
+    card.querySelector('.registry-button').addEventListener('click', () => {
+        const saveButton = card.querySelector('.registry-button');
+
+        // Check if the button is already in "Delete from Registry" mode
+        if (saveButton.textContent === 'Delete from Registry') {
+            // Send delete request
+            chrome.runtime.sendMessage({ action: "deleteProduct", productId: product.productId }, (response) => {
+                if (response && response.success) {
+                    saveButton.innerHTML = 'Save to Registry'; // Change back to save button
+                    product.productId = null; // Clear productId on deletion
+                } else {
+                    console.error('Error deleting product');
+                }
+            });
+        } else {
+            // Show loading spinner
+            const loadingSpinner = document.createElement('span');
+            loadingSpinner.classList.add('spinner');
+            saveButton.innerHTML = ''; // Clear existing content
+            saveButton.appendChild(loadingSpinner); // Show spinner
+
+            // Prepare product data and store URL
+            const productData = {
+                name,
+                price,
+                description,
+                image_url,
+                rating,
+                review_count,
+                product_url,
+                store_url
+            };
+
+            // Send message to background.js
+            chrome.runtime.sendMessage({ action: "saveProduct", product: productData }, (response) => {
+                if (response && response.productId) {
+                    product.productId = response.productId; // Save productId for deletion
+                    saveButton.innerHTML = '✔ Saved'; // Show checkmark and text
+
+                    // Change button text to "Delete from Registry" after a brief moment
+                    setTimeout(() => {
+                        saveButton.innerHTML = 'Delete from Registry';
+                    }, 1000); // Show for 1 second
+                } else {
+                    saveButton.innerHTML = 'Error'; // Handle error
+                }
+            });
+        }
+    });
+
+
+
     return card;
 }

@@ -71,13 +71,14 @@ async function scrapeProductInfo() {
     await Promise.all(productContainers.map(async (container) => {
         try {
             const details = {
+                productId: null,
                 image: await extractImageUrl(container, selectors.image),
                 name: extractData(container, selectors.name),
                 price: extractPrice(extractData(container, selectors.price)),
                 description: extractData(container, selectors.description) || await extractMetaDescription(),
                 rating: extractRating(container, selectors.rating),
                 reviewCount: extractNumber(extractData(container, selectors.reviewCount)),
-                url: extractProductUrl(container)
+                productUrl: extractProductUrl(container)
             };
 
             if (details.name && details.price) {
