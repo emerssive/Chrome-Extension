@@ -58,6 +58,7 @@ function initializeApp() {
     initializeFilterSystem();
     loadProducts();
     setupPagination();
+    setupModal();
 
     const searchInput = document.querySelector('.search-bar input[type="text"]');
     searchInput.addEventListener('input', () => {
@@ -316,7 +317,37 @@ function createProductCard(product) {
         }
     });
 
+    card.querySelector('.info-button').addEventListener('click', () => {
+        showProductInfo(product); // Call to show product information
+    });
 
 
     return card;
+}
+
+function setupModal() {
+    const modal = document.getElementById('product-modal');
+    const closeButton = document.querySelector('.close-button');
+
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+function showProductInfo(product) {
+    document.getElementById('modal-product-name').innerText = product.name;
+    document.getElementById('modal-product-image').src = product.image || 'placeholder.jpg';
+    document.getElementById('modal-product-description').innerText = product.description || 'No description available';
+    document.getElementById('modal-product-price').innerText = `Price: $${product.price.toFixed(2)}`;
+    document.getElementById('modal-product-rating').innerText = `Rating: ${product.rating || 'N/A'}`;
+    document.getElementById('modal-product-review-count').innerText = `Reviews: ${product.reviewCount || 0}`;
+
+    const modal = document.getElementById('product-modal');
+    modal.style.display = 'block';
 }
