@@ -286,6 +286,33 @@ app.get('/products', async (req, res) => {
   }
 });
 
+// Delete a product
+app.delete('/products/:productId', verifyToken, async (req, res) => {
+  const { productId } = req.params;
+  try {
+    // Check if the product exists
+    const productResult = await pool.query('SELECT * FROM products WHERE id = $1', [productId]);
+    if (productResult.rows.length === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check if the product is associated with any registry items
+    const registryItemResult = await pool.query('SELECT * FROM registry_items WHERE product_id = $1', [productId]);
+    if (registryItemResult.rows.length > 0) {
+      return res.status(400).json({ error: 'Cannot delete product; it is associated with registry items' });
+    }
+
+    // Delete the product
+    await pool.query('DELETE FROM products WHERE id = $1', [productId]);
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Error deleting product' });
+  }
+});
+
+
 //API documentation
 const swaggerOptions = {
   swaggerDefinition: {
