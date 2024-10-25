@@ -253,6 +253,39 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// Save a product
+app.post('/products', async (req, res) => {
+  const { name, description, price, image_url, rating, review_count, product_url, store_url } = req.body;
+  try {
+    // Validate required fields
+    if (!name || price === undefined) {
+      return res.status(400).json({ error: 'Name and price are required' });
+    }
+
+    const result = await pool.query(
+      `INSERT INTO products (name, description, price, image_url, rating, review_count, product_url, store_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING id`,
+      [name, description, price, image_url, rating, review_count, product_url, store_url]
+    );
+    res.status(201).json({ message: 'Product created successfully', productId: result.rows[0].id });
+  } catch (error) {
+    console.error('Error saving product:', error);
+    res.status(500).json({ error: 'Error saving product' });
+  }
+});
+
+// Fetch products
+app.get('/products', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM products ORDER BY created_at DESC');
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Error fetching products' });
+  }
+});
+
 //API documentation
 const swaggerOptions = {
   swaggerDefinition: {
