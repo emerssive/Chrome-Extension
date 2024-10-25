@@ -144,6 +144,30 @@
             return true; // Keep the message channel open for async response
         }
 
+        //fetchProducts
+        if (request.action === "getRegistryProducts") {
+            fetch("https://c85b-39-51-52-196.ngrok-free.app/products", {
+                method: 'GET'
+            })
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Fetched products:", data.products);
+                    sendResponse({ products: data.products });
+                })
+                .catch(error => {
+                    console.error("Error fetching registry products:", error);
+                    sendResponse({ products: [] });
+                });
+
+            return true; // Keep the channel open for async response
+        }
+
 
 
     });

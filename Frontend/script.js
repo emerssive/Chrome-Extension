@@ -1,4 +1,5 @@
 let globalProducts = []; // Global array to store products
+let defaultGlobalProducts = []; // Backup for default products
 
 document.addEventListener('DOMContentLoaded', initializeApp);
 
@@ -21,6 +22,37 @@ window.addEventListener('beforeunload', function () {
         }
     });
 });
+
+// Toggle dropdown menu on user icon click
+document.getElementById('user-icon').addEventListener('click', () => {
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+// "See Your Registry" option
+document.getElementById('registry-option').addEventListener('click', () => {
+    // Store current globalProducts in defaultGlobalProducts if not already set
+    if (defaultGlobalProducts.length === 0) {
+        defaultGlobalProducts = [...globalProducts];
+    }
+    // Fetch registry products
+    chrome.runtime.sendMessage({ action: "getRegistryProducts" }, (response) => {
+        if (response && response.products) {
+            globalProducts = response.products; // Set registry products
+            displayProducts(1, 6); // Update product display
+        }
+    });
+    document.getElementById('dropdown-menu').style.display = 'none';
+});
+
+// "Home" option
+document.getElementById('home-option').addEventListener('click', () => {
+    globalProducts = defaultGlobalProducts; // Reset to default products
+    defaultGlobalProducts = []; // Clear backup
+    displayProducts(1, 6); // Update product display
+    document.getElementById('dropdown-menu').style.display = 'none';
+});
+
 
 function initializeApp() {
     initializeFilterSystem();
