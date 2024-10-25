@@ -287,7 +287,8 @@ app.get('/products', async (req, res) => {
 });
 
 // Delete a product
-app.delete('/products/:productId', verifyToken, async (req, res) => {
+// Delete a product without token verification
+app.delete('/products/:productId', async (req, res) => {
   const { productId } = req.params;
   try {
     // Check if the product exists
@@ -311,6 +312,7 @@ app.delete('/products/:productId', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Error deleting product' });
   }
 });
+
 
 
 //API documentation
