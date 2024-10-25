@@ -7,9 +7,11 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 // Database connection
 const pool = new Pool({
