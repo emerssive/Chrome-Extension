@@ -23,10 +23,14 @@ jobs:
         run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       
       - name: Build Docker Image
-        run: docker build -t $DOCKER_USERNAME/chrome-extension-backend .
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker build -t ${DOCKER_USERNAME}/chrome-extension-backend .
 
       - name: Push to Dockerhub
-        run: docker push $DOCKER_USERNAME/chrome-extension-backend:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: docker push ${DOCKER_USERNAME}/chrome-extension-backend:latest
 
   deploy:
     runs-on: self-hosted
@@ -34,12 +38,16 @@ jobs:
 
     steps:
       - name: Pull Docker Image
-        run: sudo docker pull $DOCKER_USERNAME/chrome-extension-backend:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        run: sudo docker pull ${DOCKER_USERNAME}/chrome-extension-backend:latest
       
       - name: Remove Previous Container
         run: sudo docker rm -f chrome-extension-backend-container || true
 
       - name: Run Docker Image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           sudo docker run -d \
             --name chrome-extension-backend-container \
@@ -49,4 +57,4 @@ jobs:
             -e DB_PORT=${{ secrets.DB_PORT }} \
             -e DB_USER=${{ secrets.DB_USER }} \
             -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-            $DOCKER_USERNAME/chrome-extension-backend
+            ${DOCKER_USERNAME}/chrome-extension-backend
