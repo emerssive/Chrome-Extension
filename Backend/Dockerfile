@@ -1,6 +1,8 @@
 FROM node:latest
 
-WORKDIR /Backend
+WORKDIR /app
+
+COPY package.json package-lock.json
 
 COPY . .
 
