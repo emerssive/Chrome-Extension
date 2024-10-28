@@ -1,0 +1,48 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches:
+      - Backend
+
+jobs:
+  build:
+    runs-on: Ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Docker Login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      
+      - name: Build Docker Image
+        run: docker build -t $DOCKER_USERNAME/chrome-extension-backend .
+
+      - name: Push to Dockerhub
+        run: docker push $DOCKER_USERNAME/chrome-extension-backend:latest
+
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull Docker Image
+        run: sudo docker pull $DOCKER_USERNAME/chrome-extension-backend:latest
+      
+      - name: Remove Previous Container
+        run: sudo docker rm -f chrome-extension-backend-container || true
+
+      - name: Run Docker Image
+        run: |
+          sudo docker run -d \
+            --name chrome-extension-backend-container \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            $DOCKER_USERNAME/chrome-extension-backend
