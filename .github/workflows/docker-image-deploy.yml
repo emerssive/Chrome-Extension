@@ -47,7 +47,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           sudo docker run -d \
-            -p 8080:8080
+            -p 8080:8080 \
             --name chrome-extension-backend-container \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_NAME=${{ secrets.DB_NAME }} \
