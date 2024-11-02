@@ -53,6 +53,9 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "you are hitting health check endpoint.Docs at: /api-docs" })
+})
 
 // User registration
 app.post('/register', async (req, res) => {
@@ -65,7 +68,7 @@ app.post('/register', async (req, res) => {
     );
     res.status(201).json({ message: 'User registered successfully', userId: result.rows[0].id });
   } catch (error) {
-    res.status(500).json({ error: 'Error registering user' });
+    res.status(500).json({ error: 'Error registering user', error });
   }
 });
 
@@ -85,7 +88,7 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '1h' });
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ error: 'Error logging in' });
+    res.status(500).json({ error: 'Error logging in', error });
   }
 });
 
@@ -101,7 +104,7 @@ app.get('/profile', verifyToken, async (req, res) => {
     }
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching user profile' });
+    res.status(500).json({ error: 'Error fetching user profile', error });
   }
 });
 
@@ -115,7 +118,7 @@ app.post('/registries', verifyToken, async (req, res) => {
     );
     res.status(201).json({ message: 'Registry created successfully', registryId: result.rows[0].id });
   } catch (error) {
-    res.status(500).json({ error: 'Error creating registry' });
+    res.status(500).json({ error: 'Error creating registry', error });
   }
 });
 
@@ -128,7 +131,7 @@ app.get('/registries', verifyToken, async (req, res) => {
     );
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching registries' });
+    res.status(500).json({ error: 'Error fetching registries', error });
   }
 });
 
@@ -152,7 +155,7 @@ app.get('/registries/:registryId', verifyToken, async (req, res) => {
     
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching registry details' });
+    res.status(500).json({ error: 'Error fetching registry details', error });
   }
 });
 
@@ -176,7 +179,7 @@ app.post('/registry-items', verifyToken, async (req, res) => {
     );
     res.status(201).json({ message: 'Product added to registry', registryItemId: result.rows[0].id });
   } catch (error) {
-    res.status(500).json({ error: 'Error adding product to registry' });
+    res.status(500).json({ error: 'Error adding product to registry', error });
   }
 });
 
@@ -205,7 +208,7 @@ app.get('/registry-items/:registryId', verifyToken, async (req, res) => {
     
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching registry items' });
+    res.status(500).json({ error: 'Error fetching registry items', error });
   }
 });
 
@@ -228,7 +231,7 @@ app.get('/registry-items/:registryId/:itemId', verifyToken, async (req, res) => 
     
     res.json(result.rows[0]);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching registry item details' });
+    res.status(500).json({ error: 'Error fetching registry item details', error });
   }
 });
 
@@ -246,7 +249,7 @@ app.get('/search/registries', verifyToken, async (req, res) => {
     );
     res.json(result.rows);
   } catch (error) {
-    res.status(500).json({ error: 'Error searching registries' });
+    res.status(500).json({ error: 'Error searching registries', error });
   }
 });
 
@@ -268,7 +271,7 @@ app.post('/products', async (req, res) => {
     res.status(201).json({ message: 'Product created successfully', productId: result.rows[0].id });
   } catch (error) {
     console.error('Error saving product:', error);
-    res.status(500).json({ error: 'Error saving product' });
+    res.status(500).json({ error: 'Error saving product', error });
   }
 });
 
