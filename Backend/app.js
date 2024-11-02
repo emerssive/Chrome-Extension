@@ -250,11 +250,6 @@ app.get('/search/registries', verifyToken, async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
 // Save a product
 app.post('/products', async (req, res) => {
   const { name, description, price, image_url, rating, review_count, product_url, store_url } = req.body;
@@ -314,8 +309,6 @@ app.delete('/products/:productId', async (req, res) => {
     res.status(500).json({ error: 'Error deleting product' });
   }
 });
-
-
 
 //API documentation
 const swaggerOptions = {
@@ -778,3 +771,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
