@@ -13,7 +13,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-// Database connection
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
@@ -30,8 +29,6 @@ pool.query('SELECT NOW()', (err, res) => {
   }
 });
 
-
-// JWT secret key
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware to verify JWT token
