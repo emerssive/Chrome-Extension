@@ -160,7 +160,6 @@ app.get('/registries/:registryId', verifyToken, async (req, res) => {
 app.post('/registry-items', verifyToken, async (req, res) => {
   const { registryId, productId, quantity } = req.body;
   try {
-    // First verify the registry belongs to the user
     const registryCheck = await pool.query(
       'SELECT id FROM registries WHERE id = $1 AND user_id = $2',
       [registryId, req.userId]
