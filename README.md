@@ -78,8 +78,7 @@ In script.js, add event listeners for:
 4. The extension scrapes product data and displays it in the UI
    - Each product appears in a card format with options for viewing details
 5. Click "More Information" for expanded product details in a modal
-6. Use the dropdown menu to switch between "Home" and "See Your Registry" views
-   - Access global or store-specific products
+6. Use the dropdown menu to switch between "Home" and "See Your Registry" views to access global or store-specific products
 
 
 
