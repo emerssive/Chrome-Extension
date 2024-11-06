@@ -96,7 +96,6 @@ This repository contains the backend code for a registry platform, allowing user
 - [CORS Configuration](#cors-configuration)
 - [Known Bugs and Issues](#known-bugs-and-issues)
 - [Critical Improvements](#critical-improvements)
-- [License](#license)
 
 ## Features
 - **User Authentication**: Secure user registration and login using JWT-based authentication
